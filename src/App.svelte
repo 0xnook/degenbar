@@ -1,7 +1,6 @@
 <script lang="ts">
 	import {ethers} from 'ethers';
 	import { WrapperBuilder } from "redstone-evm-connector";
-	export let name;
 
   const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
 	const houseOfReserveAddress = '0x62c4014a76e21C046fc5196D81E8cD7e04C5f122';
@@ -94,11 +93,13 @@ function initContracts() {
 	const wrappedHouseOfReserveContract = WrapperBuilder.wrapLite(houseOfCoinContract).usingPriceFeed('redstone-stocks');
 	console.log('done wrapping');
 }
+
+$: i = 0
+setInterval(()=>i++, 1000);
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	<h1> {i} </h1>
 
 	<button on:click={initContracts}>wrapp contracts</button>
 </main>
