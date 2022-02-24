@@ -41,6 +41,7 @@
 	},
 	"dependencies": {
 		"ethers": "^5.5.4",
+		"node-polyfill-webpack-plugin": "^1.1.4",
 		"redstone-evm-connector": "^2.1.6",
 		"serve": "^13.0.2"
 	},

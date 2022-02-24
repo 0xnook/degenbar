@@ -51,6 +51,7 @@ import Autoprefixer from 'autoprefixer';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CSSMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import SvelteCheckPlugin from 'svelte-check-plugin';
+import NodePolyfillPlugin from 'node-polyfill-webpack-plugin';
 
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 
@@ -76,10 +77,6 @@ const config: Configuration = {
 		},
 		extensions: ['.mjs', '.js', '.ts', '.svelte'],
 		mainFields: ['svelte', 'browser', 'module', 'main'],
-		fallback: { 
-			"stream": require.resolve("stream-browserify"),
-			"buffer": require.resolve("buffer")
-		}
 	},
 	output: {
 		path: path.resolve(__dirname, 'public/build'),
@@ -174,15 +171,11 @@ const config: Configuration = {
 	},
 	target: isDevelopment ? 'web' : 'browserslist',
 	plugins: [
+		new NodePolyfillPlugin({
+			excludeAliases: ['console']
+		}),
 		new MiniCssExtractPlugin({
 			filename: '[name].css'
-		}),
-		new Webpack.ProvidePlugin({
-      process: 'process/browser',
-      Buffer: ['buffer', 'Buffer'],
-    }),
-		new Webpack.DefinePlugin({
-      'process.env': JSON.stringify('development')
 		}),
 		...(svelteCheckInDevelopment || isProduction && svelteCheckInProduction ? [new SvelteCheckPlugin()] : [])
 	],
