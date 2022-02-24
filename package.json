@@ -41,7 +41,7 @@
 	},
 	"dependencies": {
 		"ethers": "^5.5.4",
-		"redstone-evm-connector": "^2.1.3",
+		"redstone-evm-connector": "^2.1.6",
 		"serve": "^13.0.2"
 	},
 	"browserslist": [
