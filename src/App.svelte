@@ -12,10 +12,7 @@
 async function initContracts() {
 	const contract = new ethers.Contract(contractAddress, ABI, provider.getSigner());
 	const wrappedContract = WrapperBuilder.wrapLite(contract).usingPriceFeed('redstone', { asset: "CHF" });
-
 	chfPrice = await wrappedContract.redstoneGetLastPrice();
-
-	console.log('done wrapping');
 }
 
 $: i = 0
@@ -26,7 +23,7 @@ setInterval(()=>i++, 1000);
 	Please connect to kovan optimism
 	<h1> CHF Price: {chfPrice ? ethers.utils.formatUnits(chfPrice, 8) : 'no value'} </h1>
 
-	<button on:click={initContracts}>wrapp contracts</button>
+	<button on:click={initContracts}>update price</button>
 </main>
 
 <style lang="scss">
