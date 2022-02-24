@@ -14,9 +14,7 @@ async function initContracts() {
 	const wrappedContract = WrapperBuilder.wrapLite(contract).usingPriceFeed('redstone', { asset: "CHF" });
 	chfPrice = await wrappedContract.redstoneGetLastPrice();
 }
-
-$: i = 0
-setInterval(()=>i++, 1000);
+ethereum.request({ method: 'eth_requestAccounts' });
 </script>
 
 <main>
