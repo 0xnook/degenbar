@@ -3,9 +3,10 @@ module.exports = async function ({ ethers, deployments, getNamedAccounts }) {
 
   const { deployer } = await getNamedAccounts();
 
-  const boxCurrency = "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889";
+  //const boxCurrency = "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889"; //wmatic mumbai
+  const boxCurrency = "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889"; //link rinkeby
   const period = 100;
-  const fixedAmount = ethers.utils.parseEther("0.001");
+  const fixedAmount = ethers.utils.parseEther("1");
 
   const feeData = await ethers.provider.getFeeData();
 

@@ -7,11 +7,12 @@ import "hardhat/console.sol";
 contract DegenBox {
   uint256 public  unlockEnd;
   uint256 public  immutable unlockPeriod;
-  uint256 public moneyInTheBox;
   IERC20 public immutable boxCurrency;
+  uint256 public moneyInTheBox;
+  uint256 public fixedAmount;
   bool public isBroken;
   address public owner;
-  uint256 public fixedAmount;
+  uint256 stealCount;
 
   address[] public degens;
 
@@ -28,11 +29,10 @@ contract DegenBox {
   }
 
   function steal() external {
-    console.log("stealing");
     require(isBroken == false, "already broken");
+    require(owner != msg.sender, "already owner");
     require(boxCurrency.transferFrom(msg.sender, address(this), fixedAmount));
     moneyInTheBox = moneyInTheBox + fixedAmount;
-    console.log("moneyInTheBox %s", moneyInTheBox);
     heist();
   }
 
@@ -46,7 +46,7 @@ contract DegenBox {
 
   function heist() private {
     
-    uint256 prnd = uint256(keccak256(abi.encodePacked(block.difficulty, block.timestamp, degens.length)));
+    uint256 prnd = uint256(blockhash(block.number-1)) + degens.length;
     uint256 breakResult =  (prnd % 1000);
     console.log("breakresult %s", breakResult);
     if (breakResult > degens.length) {//sucessfull
@@ -62,11 +62,10 @@ contract DegenBox {
       if(newDegen) {
         degens.push(msg.sender);
       }
-      console.log("heist succesfull");
+      stealCount++;
       emit BoxStolen(msg.sender, victim);
     } else {
       isBroken = true;
-      console.log("heist failed");
       emit BoxBroken(owner, moneyInTheBox);
     }
   }
@@ -87,6 +86,11 @@ contract DegenBox {
     emit Reset(msg.sender, degens);
     isBroken = false;
     delete degens;
+    stealCount = 0;
+  }
+
+  function getDegens() external view returns (address[] memory){
+    return degens;
   }
 
   modifier onlyOwner() {
