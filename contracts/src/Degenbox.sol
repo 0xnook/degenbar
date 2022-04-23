@@ -12,7 +12,9 @@ contract DegenBox {
   uint256 public fixedAmount;
   bool public isBroken;
   address public owner;
-  uint256 stealCount;
+  uint256 public stealCount;
+  address public charityAddress;
+  uint256 public charityBP;
 
   address[] public degens;
 
@@ -20,12 +22,15 @@ contract DegenBox {
   event BoxBroken(address indexed claimer, uint256 amount);
   event Donation(address indexed donor, uint256 amount);
   event Reset(address indexed rester, address[] degens);
+  event ChairityFunding(uint256 amount);
   
-  constructor(uint256 _unlockPeriod, IERC20 _boxCurrency, uint256 _fixedAmount) {
+  constructor(uint256 _unlockPeriod, IERC20 _boxCurrency, uint256 _fixedAmount, addresse _charityAddress, uint256 _chairityBP) {
     unlockPeriod = _unlockPeriod;
     unlockEnd = block.timestamp + _unlockPeriod;
     boxCurrency = _boxCurrency;
     fixedAmount = _fixedAmount;
+    charityAddress = _charityAddress;
+    charityBP = _chairityBP;
   }
 
   function steal() external {
@@ -38,10 +43,13 @@ contract DegenBox {
 
   function unlock() external onlyOwner {
     require(block.timestamp > unlockEnd || isBroken);
-    uint256 payoutAmount = moneyInTheBox;
+    uint256 charityAmount = moneyInTheBox * charityBP / 1000;
+    uint256 payoutAmount = moneyInTheBox - charityAmount;
     moneyInTheBox = 0;
     reset();
     boxCurrency.transfer(msg.sender, payoutAmount);
+    boxCurrency.transfer(charityAddress, charityAmount);
+    emit ChairityFunding(charityAmount);
   }
 
   function heist() private {
