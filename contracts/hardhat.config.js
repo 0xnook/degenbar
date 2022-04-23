@@ -1,12 +1,6 @@
 require("dotenv").config();
 
-require("@nomiclabs/hardhat-etherscan");
 require("@nomiclabs/hardhat-waffle");
-require("hardhat-gas-reporter");
-require("solidity-coverage");
-require("hardhat-deploy");
-require("@nomiclabs/hardhat-truffle5");
-require("./tasks");
 
 function getMnemonic(networkName) {
   if (networkName) {
@@ -212,7 +206,7 @@ module.exports = {
   solidity: {
     compilers: [
       {
-        version: "0.813",
+        version: "0.8.13",
         settings: {
           optimizer: {
             enabled: true,
