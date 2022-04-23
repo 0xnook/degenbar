@@ -1,45 +1,108 @@
 <script lang="ts">
-	let chfPrice: number;
-	import {ethers} from 'ethers';
-	import { WrapperBuilder } from "redstone-evm-connector";
 
-  const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
- 
-	const contractAddress = '0xceEcd3aFb9A9392ccaa3312D1c8bcEE59873841f';
+import Header from './Header.svelte';
+import Slider from '@bulatdashiev/svelte-slider';
+import { defaultEvmStores, signerAddress, connected, chainId, contracts, provider }  from 'svelte-ethers-store';
+import { providers, utils } from 'ethers';
+import DegenABI from '../abi/DegenBox.json';
+import ERC20ABI from '../abi/ERC20.json';
+import Landing from './Landing.svelte';
+import { bounty, currentOwner, currPage } from './store';
+import Play from './Play.svelte';
+import Rules from './Rules.svelte';
 
-	const ABI = '[{"inputs":[],"name":"getMaxBlockTimestampDelay","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getMaxDataTimestampDelay","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_receviedSigner","type":"address"}],"name":"isSignerAuthorized","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_receivedTimestamp","type":"uint256"}],"name":"isTimestampValid","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"redstoneGetLastPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}]'
+let stealCount = 69;
+let helthFactorRange = [50, 100];
 
-async function initContracts() {
-	const contract = new ethers.Contract(contractAddress, ABI, provider.getSigner());
-	const wrappedContract = WrapperBuilder.wrapLite(contract).usingPriceFeed('redstone', { asset: "CHF" });
-	chfPrice = await wrappedContract.redstoneGetLastPrice();
+
+let previousOwners = ["vitalik.eth", "0xNGMI", "oops.eth", "nook.eth", "0x42cAb07f3D4B2eBb805BD063Aa4866A80796D0Aa"];
+let degenBarAddy = '0x864B80657b62FE55B1650374bCBa77d814901ED1';
+
+defaultEvmStores.attachContract('degenBox', degenBarAddy, DegenABI)
+
+defaultEvmStores.attachContract('erc20', '0x9c3c9283d3e44854697cd22d3faa240cfb032889', ERC20ABI);
+
+
+
+
+
+
+async function fetchAll() {
+	const degenBox = $contracts.degenBox;
+	if(degenBox) {
+		$bounty = await degenBox.moneyInTheBox();
+		$currentOwner = await degenBox.owner();
+	}
 }
-ethereum.request({ method: 'eth_requestAccounts' });
+
+$: if($contracts.degenBox && $provider) {
+	fetchAll();
+	$provider.on('block', (blockNumber: number) => {
+			fetchAll();
+	});
+
+
+	/* $contracts.degenBox.on('BoxStolen', (stealer: string, address: string, _event: Event) => { */
+	/* 			fetchAll(); */			
+	/* }); */
+
+	/* $contracts.degenBox.on('Reset', (src: string, guy: string, _event: Event) => { */
+	/* 			fetchAll(); */			
+	/* }); */
+}
+
+
+/* $currPage = 'play'; */
 </script>
 
-<main>
-	Please connect to kovan optimism
-	<h1> CHF Price: {chfPrice ? ethers.utils.formatUnits(chfPrice, 8) : 'no value'} </h1>
 
-	<button on:click={initContracts}>update price</button>
-</main>
+<style>
+	@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
 
-<style lang="scss">
 	main {
 		text-align: center;
 		padding: 1em;
 		max-width: 240px;
 		margin: 0 auto;
+		font-family: 'Comic Neue', cursive;	
+	}
 
-		h1 {
-			color: #ff3e00;
-			text-transform: uppercase;
-			font-size: 4em;
-			font-weight: 100;
-		}
 
-		@media (min-width: 640px) {
+	.red {
+		color: red;
+	}
+
+	@media (min-width: 640px) {
+		main {
 			max-width: none;
 		}
 	}
+
+	.red {
+		color: red
+	}
+
+
 </style>
+
+
+<main>
+	{#if $connected && $chainId !== 80001}
+		<p class="red">Please change to mumbai network</p>
+		{$chainId}
+	{:else if !$connected }
+		
+		<p class="red">Pls connect</p>
+	{/if}
+
+	<Header/>
+	
+	{#if $currPage === "landing"}
+		<Landing/>
+	{:else if $currPage === "play"}
+		<Play/>
+	{:else if $currPage === "rules"}
+		<Rules/>
+	{/if}
+</main>
+
