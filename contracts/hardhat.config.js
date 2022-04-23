@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 require("@nomiclabs/hardhat-waffle");
+require('hardhat-deploy');
 
 function getMnemonic(networkName) {
   if (networkName) {
@@ -141,7 +142,16 @@ module.exports = {
         live: true,
         saveDeployments: true,
         deploy: ['deploy_optimism']
-    }
+    },
+    mumbai: {
+      url: "https://rpc-mumbai.maticvigil.com/",
+      accounts: accounts("mumbai"),
+      chainId: 80001,
+      live: true,
+      saveDeployments: true,
+      tags: ["staging"],
+      gasMultiplier: 2,
+    },
   },
   namedAccounts: {
     deployer: {
@@ -150,18 +160,11 @@ module.exports = {
       4: 1,
       5: 1,
       42: 1,
-      69: 1
+      69: 1,
+      80001: 0
     },
     owner: {
       default: 1,
-      1: process.env.MULTISIG_DEPLOY, // mainnet
-      10: process.env.MULTISIG_DEPLOY, // optimism
-      3: process.env.MULTISIG_DEPLOY, // ropsten
-      4: process.env.MULTISIG_DEPLOY, // rinkeby
-      5: process.env.MULTISIG_DEPLOY, // goerli
-      42: process.env.MULTISIG_DEPLOY, // kovan
-      69: process.env.MULTISIG_DEPLOY, // optimism kovan
-      42161: process.env.MULTISIG_DEPLOY // arb1
     },
     dev: {
       // Default to 1
@@ -169,39 +172,9 @@ module.exports = {
       // dev address mainnet
       // 1: "",
     },
-    multiSigDefaultOwner: {
-      default: 0,
-      1: process.env.MULTISIG_DEFAULT,
-      10: process.env.MULTISIG_DEFAULT,
-      3: process.env.MULTISIG_DEFAULT,
-      4: process.env.MULTISIG_DEFAULT,
-      5: process.env.MULTISIG_DEFAULT,
-      42: process.env.MULTISIG_DEFAULT,
-      69: process.env.MULTISIG_DEFAULT,
-      42161: process.env.MULTISIG_DEFAULT,
-    }
-  },
-  gasReporter: {
-    enabled:
-      process.env.REPORT_GAS !== undefined ? process.env.REPORT_GAS : true,
-    currency: "CHF",
-    // url: "http://192.168.0.100:8546",
-    // excludeContracts: ["contracts/mocks/", "contracts/libraries/"],
   },
   etherscan: {
-    apiKey: {
-      mainnet: process.env.ETHERSCAN_API_KEY,
-      ropsten: process.env.ETHERSCAN_API_KEY,
-      rinkeby: process.env.ETHERSCAN_API_KEY,
-      goerli: process.env.ETHERSCAN_API_KEY,
-      kovan: process.env.ETHERSCAN_API_KEY,
-      // optimism
-      optimism: process.env.OPTIMISM_ETHERSCAN_API_KEY,
-      kovanOptimism: process.env.OPTIMISM_ETHERSCAN_API_KEY,
-      // polygon
-      polygon: process.env.POLYGONSCAN_API_KEY,
-      polygonMumbai: process.env.POLYGONSCAN_API_KEY,
-    }
+    apiKey: process.env.ETHERSCAN_API_KEY
   },
   solidity: {
     compilers: [
