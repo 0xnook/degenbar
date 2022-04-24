@@ -13,24 +13,24 @@ contract DegenBox {
   bool public isBroken;
   address public owner;
   uint256 public stealCount;
-  address public charityAddress;
-  uint256 public charityBP;
+  address public chairityAddress;
+  uint256 public chairityBP;
 
   address[] public degens;
 
-  event BoxStolen(address indexed stealer, address indexed victim);
-  event BoxBroken(address indexed claimer, uint256 amount);
+  event StealBox(address indexed stealer, address indexed victim, bool successful, uint256 amount);
+  event Unlock(address indexed, uint256 amount);
   event Donation(address indexed donor, uint256 amount);
   event Reset(address indexed rester, address[] degens);
-  event ChairityFunding(uint256 amount);
+  event ChairityFunding(address indexed chairity, uint256 amount);
   
-  constructor(uint256 _unlockPeriod, IERC20 _boxCurrency, uint256 _fixedAmount, addresse _charityAddress, uint256 _chairityBP) {
+  constructor(uint256 _unlockPeriod, IERC20 _boxCurrency, uint256 _fixedAmount, address _charityAddress, uint256 _chairityBP) {
     unlockPeriod = _unlockPeriod;
     unlockEnd = block.timestamp + _unlockPeriod;
     boxCurrency = _boxCurrency;
     fixedAmount = _fixedAmount;
-    charityAddress = _charityAddress;
-    charityBP = _chairityBP;
+    chairityAddress = _charityAddress;
+    chairityBP = _chairityBP;
   }
 
   function steal() external {
@@ -42,18 +42,21 @@ contract DegenBox {
   }
 
   function unlock() external onlyOwner {
+    _unlock();
+  }
+  function _unlock() private {
     require(block.timestamp > unlockEnd || isBroken);
-    uint256 charityAmount = moneyInTheBox * charityBP / 1000;
-    uint256 payoutAmount = moneyInTheBox - charityAmount;
+    uint256 chairityAmount = moneyInTheBox * chairityBP / 1000;
+    uint256 payoutAmount = moneyInTheBox - chairityAmount;
     moneyInTheBox = 0;
+    boxCurrency.transfer(owner, payoutAmount);
+    boxCurrency.transfer(chairityAddress, chairityAmount);
     reset();
-    boxCurrency.transfer(msg.sender, payoutAmount);
-    boxCurrency.transfer(charityAddress, charityAmount);
-    emit ChairityFunding(charityAmount);
+    emit Unlock(owner, payoutAmount);
+    emit ChairityFunding(chairityAddress, chairityAmount);
   }
 
   function heist() private {
-    
     uint256 prnd = uint256(blockhash(block.number-1)) + degens.length;
     uint256 breakResult =  (prnd % 1000);
     console.log("breakresult %s", breakResult);
@@ -71,10 +74,10 @@ contract DegenBox {
         degens.push(msg.sender);
       }
       stealCount++;
-      emit BoxStolen(msg.sender, victim);
+      emit StealBox(msg.sender, victim, true, moneyInTheBox);
     } else {
       isBroken = true;
-      emit BoxBroken(owner, moneyInTheBox);
+      emit StealBox(msg.sender, owner, false, moneyInTheBox);
     }
   }
 
@@ -86,8 +89,8 @@ contract DegenBox {
   }
 
   function restart() external{
-    require(isBroken, "Box isn't broken");
-    reset();
+    require(isBroken, "Game didn't end yet.");
+    _unlock();
   }
 
   function reset() private {
