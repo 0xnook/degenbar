@@ -152,6 +152,13 @@ module.exports = {
       tags: ["staging"],
       gasMultiplier: 2,
     },
+    polygon: {
+      url: "https://polygon-rpc.com",
+      accounts: accounts("polygon"),
+      chainId: 137,
+      live: true,
+      saveDeployments: true,
+    },
   },
   namedAccounts: {
     deployer: {
