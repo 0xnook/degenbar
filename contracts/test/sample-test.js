@@ -23,7 +23,7 @@ describe("DegenBox", function () {
     accounts = [owner.address,sig1.address,sig2.address,sig3.address,sig4.address,sig5.address];
 
     const DegenBox = await ethers.getContractFactory("DegenBox");
-    degenBox = await DegenBox.deploy(1000000, daiAddress, ethers.utils.parseEther("0.001"));
+    degenBox = await DegenBox.deploy(1000000, daiAddress, ethers.utils.parseEther("0.001"), ethers.constants.AddressZero, 0);
     await degenBox.deployed();
 
     daiContract = await ethers.getContractAt("IERC20",daiAddress);

@@ -58,8 +58,7 @@ contract DegenBox {
 
   function heist() private {
     uint256 prnd = uint256(blockhash(block.number-1)) + degens.length;
-    uint256 breakResult =  (prnd % 1000);
-    console.log("breakresult %s", breakResult);
+    uint256 breakResult =  (prnd % 10);
     if (breakResult > degens.length) {//sucessfull
       unlockEnd = block.timestamp + unlockPeriod;
       address victim = owner;

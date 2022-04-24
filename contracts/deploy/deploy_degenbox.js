@@ -3,10 +3,13 @@ module.exports = async function ({ ethers, deployments, getNamedAccounts }) {
 
   const { deployer } = await getNamedAccounts();
 
-  //const boxCurrency = "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889"; //wmatic mumbai
-  const boxCurrency = "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889"; //link rinkeby
-  const period = 100;
+  const boxCurrency = "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889"; //wmatic mumbai
+  //const boxCurrency = "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889"; //link rinkeby
+  //const boxCurrency = "0xa36085F69e2889c224210F603D836748e7dC0088"; //link kovan
+  const period = 1000;
   const fixedAmount = ethers.utils.parseEther("1");
+  const chairityAddress = ethers.constants.AddressZero;
+  const chairityBP = 0;
 
   const feeData = await ethers.provider.getFeeData();
 
@@ -16,7 +19,9 @@ module.exports = async function ({ ethers, deployments, getNamedAccounts }) {
     args: [
       period,
       boxCurrency,
-      fixedAmount
+      fixedAmount,
+      chairityAddress,
+      chairityBP
     ],
     log: true,
     maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
