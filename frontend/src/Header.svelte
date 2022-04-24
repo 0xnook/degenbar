@@ -3,8 +3,7 @@ import Web3Modal from "web3modal";
 import { defaultEvmStores, signerAddress, connected }  from 'svelte-ethers-store';
 import { toShortAddress } from '../lib';
 import WalletConnectProvider from '@walletconnect/web3-provider';
-import { providers } from 'ethers';
-import { currPage } from './store';
+import { currPage, currentOwner } from './store';
 
 /* const Web3Modal = window.Web3Modal.default */
 /* const WalletConnectProvider = window.WalletConnectProvider.default */
@@ -35,10 +34,8 @@ async function handleConnect() {
 		/* const instance = await web3Modal.connect(); */
 	});
 
-	console.log('setting!!!');
 	const provider = await web3Modal.connect()
 	
-	console.log('setting!!!');
 	defaultEvmStores.setProvider(provider)
 }
 
@@ -71,6 +68,7 @@ function handleDisconnect() {
 		justify-content: space-between;
 	}
 
+
 	h1 {
 		font-size: 4rem;
 	}
@@ -87,7 +85,19 @@ function handleDisconnect() {
 		border-radius: 50%;
 		font-size: 1.5rem;
 	}
+
+
+	@media (max-width: 640px) {
+			.header {
+				flex-direction: column;
+				align-items: center;
+			}
+			h1 {
+				font-size: 2rem;
+			}
+	}
 </style>
+
 
 <div class="header">
 		<div></div>
@@ -101,4 +111,8 @@ function handleDisconnect() {
 			</button>
 		{/if}
 </div>
+
+
+<h2>Current owner: </h2>
+<h2>{$currentOwner}</h2>
 

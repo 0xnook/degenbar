@@ -26,11 +26,15 @@ async function steal() {
 	}
 	console.log($contracts.degenBox);
 	console.log($contracts.erc20);
-	console.log('no degenbox');
 }
 </script>
 
 <style>
+
+img {
+	max-width: 100%;
+	height: auto;
+}
 
 .oval {
 	width: 10rem;

@@ -31,6 +31,12 @@ function noRules(event) {
 </script>
 
 <style>
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
 .story  {
 	font-size: 2rem;
 }
@@ -79,12 +85,8 @@ function noRules(event) {
 	left: 50%;
 	transform: translate(-50%, -50%);
 }
+
 </style>
-
-<div on:mousemove={handleMousemove}>
-	The mouse position is {m.x} x {m.y}
-
-
 
 <div class="story">
 	<div>You walk into a degen bar and see a box with 
@@ -92,11 +94,9 @@ function noRules(event) {
 			{$fmtBounty}
 				</div> inside. 
 		</div>
+&nbsp;
 	<div>The box is a bit worn and from its wear, you can deduce it was stolen <div class="red inline">{$stealCount} </div> times already.</div>
 </div>
-
-
-<h2>Current owner: {$currentOwner}</h2>
 
 
 <div class="textInImageContainer">
@@ -111,5 +111,4 @@ function noRules(event) {
 
 <button on:click={()=>{$currPage='play'}} class="oval green">> Play</button>
 
-</div>
 

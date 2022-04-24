@@ -23,10 +23,6 @@ defaultEvmStores.attachContract('degenBox', degenBarAddy, DegenABI)
 defaultEvmStores.attachContract('erc20', '0x9c3c9283d3e44854697cd22d3faa240cfb032889', ERC20ABI);
 
 
-
-
-
-
 async function fetchAll() {
 	const degenBox = $contracts.degenBox;
 	if(degenBox) {
