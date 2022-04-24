@@ -35,6 +35,7 @@ li {
 
 <ul class="list">
   <li>Do not talk about the box</li>
+	<li>Degen Box never Rugs</li>
   <li>Only one degen owns the Box at any given time</li>
   <li>A different degen plays by stealing the Box from the owner</li>
 	<li>The thief can only steal by staking $$$ int the Box contract</li>
