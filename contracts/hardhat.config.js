@@ -159,6 +159,13 @@ module.exports = {
       live: true,
       saveDeployments: true,
     },
+    rinkebyBoba: {
+      url: "https://rinkeby.boba.network",
+      accounts: accounts("boba"),
+      chainId: 28,
+      live: true,
+      saveDeployments: true,
+    },
   },
   namedAccounts: {
     deployer: {
